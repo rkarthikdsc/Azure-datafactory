@@ -1,0 +1,257 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "new-use-adf21"
+		},
+		"LS_AzureDataLakeStorage_appsource_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_AzureDataLakeStorage_appsource'"
+		},
+		"LS_AzureSqlDatabase_destination_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_destination'"
+		},
+		"LS_AzureSqlDatabase_source_user_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_source_user'"
+		},
+		"LS_dataflow_output_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_dataflow_output'"
+		},
+		"LS_datalake_github_sink_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_datalake_github_sink'"
+		},
+		"LS_joins_left_source_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_joins_left_source'"
+		},
+		"LS_joins_right_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_joins_right'"
+		},
+		"LS_joins_right_source_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_joins_right_source'"
+		},
+		"LS_joins_right_sources_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_joins_right_sources'"
+		},
+		"LS_joins_sink_result_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_joins_sink_result'"
+		},
+		"LS_listfiles_source_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_listfiles_source'"
+		},
+		"Ls_AzureDataLakeStorage_app_sink_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'Ls_AzureDataLakeStorage_app_sink'"
+		},
+		"ls_joins_sink_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_joins_sink'"
+		},
+		"LS_AzureDataLakeStorage_appsource_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_dataflow_output_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_datalake_github_sink_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_github_source_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://github.com"
+		},
+		"LS_joins_left_source_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_joins_right_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_joins_right_source_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_joins_right_sources_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_joins_sink_result_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_listfiles_source_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adls4demo.dfs.core.windows.net"
+		},
+		"Ls_AzureDataLakeStorage_app_sink_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adls4demo.dfs.core.windows.net"
+		},
+		"ls_joins_sink_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adls4demo.dfs.core.windows.net"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "new-use-adf21_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"LS_AzureDataLakeStorage_appsource_accountKey": {
+						"value": "[parameters('LS_AzureDataLakeStorage_appsource_accountKey')]"
+					},
+					"LS_AzureSqlDatabase_destination_connectionString": {
+						"value": "[parameters('LS_AzureSqlDatabase_destination_connectionString')]"
+					},
+					"LS_AzureSqlDatabase_source_user_connectionString": {
+						"value": "[parameters('LS_AzureSqlDatabase_source_user_connectionString')]"
+					},
+					"LS_dataflow_output_accountKey": {
+						"value": "[parameters('LS_dataflow_output_accountKey')]"
+					},
+					"LS_datalake_github_sink_accountKey": {
+						"value": "[parameters('LS_datalake_github_sink_accountKey')]"
+					},
+					"LS_joins_left_source_accountKey": {
+						"value": "[parameters('LS_joins_left_source_accountKey')]"
+					},
+					"LS_joins_right_accountKey": {
+						"value": "[parameters('LS_joins_right_accountKey')]"
+					},
+					"LS_joins_right_source_accountKey": {
+						"value": "[parameters('LS_joins_right_source_accountKey')]"
+					},
+					"LS_joins_right_sources_accountKey": {
+						"value": "[parameters('LS_joins_right_sources_accountKey')]"
+					},
+					"LS_joins_sink_result_accountKey": {
+						"value": "[parameters('LS_joins_sink_result_accountKey')]"
+					},
+					"LS_listfiles_source_accountKey": {
+						"value": "[parameters('LS_listfiles_source_accountKey')]"
+					},
+					"Ls_AzureDataLakeStorage_app_sink_accountKey": {
+						"value": "[parameters('Ls_AzureDataLakeStorage_app_sink_accountKey')]"
+					},
+					"ls_joins_sink_accountKey": {
+						"value": "[parameters('ls_joins_sink_accountKey')]"
+					},
+					"LS_AzureDataLakeStorage_appsource_properties_typeProperties_url": {
+						"value": "[parameters('LS_AzureDataLakeStorage_appsource_properties_typeProperties_url')]"
+					},
+					"LS_dataflow_output_properties_typeProperties_url": {
+						"value": "[parameters('LS_dataflow_output_properties_typeProperties_url')]"
+					},
+					"LS_datalake_github_sink_properties_typeProperties_url": {
+						"value": "[parameters('LS_datalake_github_sink_properties_typeProperties_url')]"
+					},
+					"LS_github_source_properties_typeProperties_url": {
+						"value": "[parameters('LS_github_source_properties_typeProperties_url')]"
+					},
+					"LS_joins_left_source_properties_typeProperties_url": {
+						"value": "[parameters('LS_joins_left_source_properties_typeProperties_url')]"
+					},
+					"LS_joins_right_properties_typeProperties_url": {
+						"value": "[parameters('LS_joins_right_properties_typeProperties_url')]"
+					},
+					"LS_joins_right_source_properties_typeProperties_url": {
+						"value": "[parameters('LS_joins_right_source_properties_typeProperties_url')]"
+					},
+					"LS_joins_right_sources_properties_typeProperties_url": {
+						"value": "[parameters('LS_joins_right_sources_properties_typeProperties_url')]"
+					},
+					"LS_joins_sink_result_properties_typeProperties_url": {
+						"value": "[parameters('LS_joins_sink_result_properties_typeProperties_url')]"
+					},
+					"LS_listfiles_source_properties_typeProperties_url": {
+						"value": "[parameters('LS_listfiles_source_properties_typeProperties_url')]"
+					},
+					"Ls_AzureDataLakeStorage_app_sink_properties_typeProperties_url": {
+						"value": "[parameters('Ls_AzureDataLakeStorage_app_sink_properties_typeProperties_url')]"
+					},
+					"ls_joins_sink_properties_typeProperties_url": {
+						"value": "[parameters('ls_joins_sink_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "new-use-adf21_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'new-use-adf21_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "new-use-adf21_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'new-use-adf21_ArmTemplate_1')]"
+			]
+		}
+	]
+}
