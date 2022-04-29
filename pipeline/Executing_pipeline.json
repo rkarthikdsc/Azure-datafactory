@@ -1,0 +1,82 @@
+{
+	"name": "Executing_pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Executing the Pipeline",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_logic_app_sending_email",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Send a email failed notification",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Executing the Pipeline",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-33.eastus.logic.azure.com:443/workflows/79d4cea7a4744cd7986edc12df72a75e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=TlFeK0Y-XJBTH-SPRi_btvolWs0rVyg2vgPINIDbQFg",
+					"method": "POST",
+					"body": {
+						"value": "{\n\"Title\":\"Data factory pipeline execution has failed\",\n\"Message\":\"Copydatalogic csv file activity has failed\",\n\n\"dataFactoryName\":\"@{pipeline().DataFactory}\",\n\"pipelineName\":\"@{pipeline().Pipeline}\",\n\"triggerName\":\"@{pipeline().TriggerName}\",\n\"Time\":\"@{utcnow()}\"\n}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Send a email success notification",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Executing the Pipeline",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-33.eastus.logic.azure.com:443/workflows/79d4cea7a4744cd7986edc12df72a75e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=TlFeK0Y-XJBTH-SPRi_btvolWs0rVyg2vgPINIDbQFg",
+					"method": "POST",
+					"body": {
+						"value": "{\n\"Title\":\"copy activity pipeline has successfully executed\",\n\"Message\":\"Copydatalogic csv file activity executed successfully\",\n\n\"dataFactoryName\":\"@{pipeline().DataFactory}\",\n\"pipelineName\":\"@{pipeline().Pipeline}\",\n\"triggerName\":\"@{pipeline().TriggerName}\",\n\"Time\":\"@{utcnow()}\"\n}",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "pipelines_new/Logic_app"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-04-25T12:55:45Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

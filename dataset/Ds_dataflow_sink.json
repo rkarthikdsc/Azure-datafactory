@@ -1,0 +1,35 @@
+{
+	"name": "Ds_dataflow_sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_dataflow_output",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Dataflow_datasets"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "result"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Id",
+				"type": "String"
+			},
+			{
+				"name": "Sales",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

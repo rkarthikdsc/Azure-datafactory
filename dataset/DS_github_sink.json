@@ -1,0 +1,36 @@
+{
+	"name": "DS_github_sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_datalake_github_sink",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"pFilename": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "github_datasets"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().pFilename",
+					"type": "Expression"
+				},
+				"folderPath": "csv",
+				"fileSystem": "githubdata"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

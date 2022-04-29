@@ -1,0 +1,9 @@
+{
+	"name": "new-use-adf21",
+	"location": "centralus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "05f2857f-99e2-4d8f-88a4-437935b9e128",
+		"tenantId": "9c2738da-cc81-4385-a356-f9df0023e062"
+	}
+}

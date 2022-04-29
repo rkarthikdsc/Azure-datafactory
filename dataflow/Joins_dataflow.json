@@ -1,0 +1,85 @@
+{
+	"name": "Joins_dataflow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_input_left",
+						"type": "DatasetReference"
+					},
+					"name": "leftinput"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_input_right",
+						"type": "DatasetReference"
+					},
+					"name": "rightinput"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Ds_joins_output_sink",
+						"type": "DatasetReference"
+					},
+					"name": "joinsresults"
+				}
+			],
+			"transformations": [
+				{
+					"name": "joinsdemo"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          country as string,",
+				"          country_code as string,",
+				"          continent as string,",
+				"          population as string,",
+				"          indicator as string,",
+				"          daily_count as string,",
+				"          date as string,",
+				"          rate_14_day as string,",
+				"          source as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> leftinput",
+				"source(output(",
+				"          country as string,",
+				"          country_code as string,",
+				"          continent as string,",
+				"          population as string,",
+				"          indicator as string,",
+				"          daily_count as string,",
+				"          date as string,",
+				"          rate_14_day as string,",
+				"          source as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> rightinput",
+				"leftinput, rightinput join(leftinput@country_code == rightinput@country_code,",
+				"     joinType:'inner',",
+				"     partitionBy('hash', 1),",
+				"     broadcast: 'auto')~> joinsdemo",
+				"joinsdemo sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Id as string,",
+				"          Sales as string",
+				"     ),",
+				"     partitionFileNames:['joins_output_result'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> joinsresults"
+			]
+		}
+	}
+}

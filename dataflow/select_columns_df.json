@@ -1,0 +1,63 @@
+{
+	"name": "select_columns_df",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_dataflow_source",
+						"type": "DatasetReference"
+					},
+					"name": "selectsales"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Ds_dataflow_sink",
+						"type": "DatasetReference"
+					},
+					"name": "selectedcolumns"
+				}
+			],
+			"transformations": [
+				{
+					"name": "selectrequiredcolumns"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Country as string,",
+				"          Year as string,",
+				"          Product_Type as string,",
+				"          Sales as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> selectsales",
+				"selectsales select(mapColumn(",
+				"          Salesyear = Year,",
+				"          Country,",
+				"          Sales",
+				"     ),",
+				"     partitionBy('hash', 1),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectrequiredcolumns",
+				"selectrequiredcolumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Id as string,",
+				"          Sales as string",
+				"     ),",
+				"     partitionFileNames:['specifiedcolumns'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> selectedcolumns"
+			]
+		}
+	}
+}

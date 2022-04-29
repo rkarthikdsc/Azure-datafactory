@@ -1,0 +1,107 @@
+{
+	"name": "copy_list_of_files",
+	"properties": {
+		"activities": [
+			{
+				"name": "lookup_list_of_files",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "DS_listoffiles_source",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach_listoffiles",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "lookup_list_of_files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('lookup_list_of_files').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set variable URl",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "relativeURL",
+								"value": {
+									"value": "@item().SourceRelativeURL",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "set variable file name",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set variable URl",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "filename",
+								"value": {
+									"value": "@item().FileName",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"relativeURL": {
+				"type": "String"
+			},
+			"filename": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "github_pipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-04-28T10:05:31Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

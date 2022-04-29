@@ -1,0 +1,24 @@
+{
+	"name": "tr_ingest_git_to_adls_1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_http_github_source",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-04-28T07:55:02Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

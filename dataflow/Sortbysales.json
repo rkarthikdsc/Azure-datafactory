@@ -1,0 +1,77 @@
+{
+	"name": "Sortbysales",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_dataflow_source",
+						"type": "DatasetReference"
+					},
+					"name": "Inputsource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Ds_dataflow_sink",
+						"type": "DatasetReference"
+					},
+					"name": "sortedsalessink"
+				},
+				{
+					"dataset": {
+						"referenceName": "Ds_dataflow_sink",
+						"type": "DatasetReference"
+					},
+					"name": "sortedcountrysink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "sortedcountry"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Country as string,",
+				"          Year as string,",
+				"          Product_Type as string,",
+				"          Sales as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Inputsource",
+				"Inputsource sort(desc(Country, true),",
+				"     partitionBy('hash', 1)) ~> sortedcountry",
+				"sortedcountry sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Id as string,",
+				"          Sales as string",
+				"     ),",
+				"     partitionFileNames:['sortedsalesvalues'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sortedsalessink",
+				"sortedcountry sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Id as string,",
+				"          Sales as string",
+				"     ),",
+				"     partitionFileNames:['sortedcountry'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sortedcountrysink"
+			]
+		}
+	}
+}
