@@ -1,0 +1,9 @@
+{
+	"name": "demo-microbiome",
+	"location": "centralus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "e77c02a7-e3ac-458e-bd0b-ab67b670f06d",
+		"tenantId": "915f96c7-7c0c-41f9-abf9-e804f809bd8f"
+	}
+}
