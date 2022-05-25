@@ -1,0 +1,30 @@
+{
+	"name": "DS_AzureSqlTable_control",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureSqlDatabase_source incre",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "incremental load"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "TableName",
+				"type": "varchar"
+			},
+			{
+				"name": "LastLoadDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tblControl"
+		}
+	}
+}
