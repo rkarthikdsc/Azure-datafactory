@@ -80,7 +80,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "Select * from tbluser\nWhere Last_m <= '05/01/2021' And   Last_m >  '03/01/2021'",
+						"sqlReaderQuery": {
+							"value": "select * from tbluser\nwhere last_m <= \n@'{activity('Get max updated date').output}'\nand last_m >\n@'{activity('Last updated date').output}'",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -111,6 +114,49 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Stored procedure1",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy new data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[SPUpdateLoadInfo]",
+					"storedProcedureParameters": {
+						"ModifiedDate": {
+							"value": {
+								"value": "@activity('Get max updated date').output",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"TableName": {
+							"value": {
+								"value": "'tbluser'",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSqlDatabase_source incre",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"folder": {
