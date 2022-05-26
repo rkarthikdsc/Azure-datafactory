@@ -20,6 +20,12 @@
 		"LS_AzureSqlDatabase_destination_connectionString": {
 			"value": ""
 		},
+		"LS_AzureSqlDatabase_incre_destination_connectionString": {
+			"value": ""
+		},
+		"LS_AzureSqlDatabase_source incre_connectionString": {
+			"value": ""
+		},
 		"LS_AzureSqlDatabase_source_user_connectionString": {
 			"value": ""
 		},
@@ -57,12 +63,6 @@
 			"value": ""
 		},
 		"ls_joins_sink_accountKey": {
-			"value": ""
-		},
-		"LS_AzureSqlDatabase_source incre_connectionString": {
-			"value": ""
-		},
-		"LS_AzureSqlDatabase_incre_destination_connectionString": {
 			"value": ""
 		},
 		"AzureDataLakeStorage_source_DS_sort_properties_typeProperties_url": {

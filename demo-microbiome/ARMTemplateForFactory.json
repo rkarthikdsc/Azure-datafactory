@@ -27,6 +27,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_destination'"
 		},
+		"LS_AzureSqlDatabase_incre_destination_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_incre_destination'"
+		},
+		"LS_AzureSqlDatabase_source incre_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_source incre'"
+		},
 		"LS_AzureSqlDatabase_source_user_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_source_user'"
@@ -78,14 +86,6 @@
 		"ls_joins_sink_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_joins_sink'"
-		},
-		"LS_AzureSqlDatabase_source incre_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_source incre'"
-		},
-		"LS_AzureSqlDatabase_incre_destination_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_incre_destination'"
 		},
 		"AzureDataLakeStorage_source_DS_sort_properties_typeProperties_url": {
 			"type": "string",
@@ -879,6 +879,308 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/fullLoad')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy all data",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Key",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "Key",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "Name",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "Name",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Phone",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "Phone",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Last_m",
+											"type": "DateTime",
+											"physicalType": "date"
+										},
+										"sink": {
+											"name": "Last_m",
+											"type": "DateTime",
+											"physicalType": "date"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_AzureSqlTable_incre_source",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_AzureSqlTable_incre_destination",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "incremental_load"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_AzureSqlTable_incre_source')]",
+				"[concat(variables('factoryId'), '/datasets/DS_AzureSqlTable_incre_destination')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/incre_load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Last updated date",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "select LastLoadDate as Last_Load_Date\nfrom tblcontrol",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "DS_AzureSqlTable_control",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "Get max updated date",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "select max(Last_m) as last_m\nfrom tbluser",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "DS_AzureSqlTable_incre_source",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "Copy new data",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Last updated date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Get max updated date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "select * from tbluser\nwhere last_m <= \n@'{activity('Get max updated date').output}'\nand last_m >\n@'{activity('Last updated date').output}'",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_AzureSqlTable_incre_source",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_AzureSqlTable_incre_destination",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Stored procedure1",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Copy new data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[SPUpdateLoadInfo]",
+							"storedProcedureParameters": {
+								"ModifiedDate": {
+									"value": {
+										"value": "@activity('Get max updated date').output",
+										"type": "Expression"
+									},
+									"type": "DateTime"
+								},
+								"TableName": {
+									"value": {
+										"value": "'tbluser'",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "LS_AzureSqlDatabase_source incre",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "incremental_load"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_AzureSqlTable_control')]",
+				"[concat(variables('factoryId'), '/datasets/DS_AzureSqlTable_incre_source')]",
+				"[concat(variables('factoryId'), '/datasets/DS_AzureSqlTable_incre_destination')]",
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureSqlDatabase_source incre')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1301,6 +1603,41 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_AzureSqlTable_control')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSqlDatabase_source incre",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "incremental load"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TableName",
+						"type": "varchar"
+					},
+					{
+						"name": "LastLoadDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tblControl"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureSqlDatabase_source incre')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_AzureSqlTable_destination')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1337,6 +1674,90 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/LS_AzureSqlDatabase_destination')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_AzureSqlTable_incre_destination')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSqlDatabase_incre_destination",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "incremental load"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Key",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "Phone",
+						"type": "varchar"
+					},
+					{
+						"name": "Last_m",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tbluser"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureSqlDatabase_incre_destination')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_AzureSqlTable_incre_source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSqlDatabase_source incre",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "incremental load"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Key",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "Phone",
+						"type": "varchar"
+					},
+					{
+						"name": "Last_m",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tbluser"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureSqlDatabase_source incre')]"
 			]
 		},
 		{
@@ -2086,6 +2507,32 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/LS_AzureSqlDatabase_incre_destination')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('LS_AzureSqlDatabase_incre_destination_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_AzureSqlDatabase_source incre')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('LS_AzureSqlDatabase_source incre_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/LS_AzureSqlDatabase_source_user')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -2781,406 +3228,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Ds_sort_source')]",
 				"[concat(variables('factoryId'), '/datasets/DS_sort_ouput')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/LS_AzureSqlDatabase_source incre')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('LS_AzureSqlDatabase_source incre_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_AzureSqlTable_incre_source')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_AzureSqlDatabase_source incre",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "incremental load"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "Key",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Name",
-						"type": "varchar"
-					},
-					{
-						"name": "Phone",
-						"type": "varchar"
-					},
-					{
-						"name": "Last_m",
-						"type": "date"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "tbluser"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_AzureSqlDatabase_source incre')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/LS_AzureSqlDatabase_incre_destination')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('LS_AzureSqlDatabase_incre_destination_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_AzureSqlTable_incre_destination')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_AzureSqlDatabase_incre_destination",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "incremental load"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "Key",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Name",
-						"type": "varchar"
-					},
-					{
-						"name": "Phone",
-						"type": "varchar"
-					},
-					{
-						"name": "Last_m",
-						"type": "date"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "tbluser"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_AzureSqlDatabase_incre_destination')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/incre_load')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Last updated date",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": "select LastLoadDate as Last_Load_Date\nfrom tblcontrol",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "DS_AzureSqlTable_control",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						}
-					},
-					{
-						"name": "Get max updated date",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": "select max(Last_m) as last_m\nfrom tbluser",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "DS_AzureSqlTable_incre_source",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						}
-					},
-					{
-						"name": "Copy new data",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Last updated date",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Get max updated date",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": "Select * from tbluser\nWhere Last_m <= '05/01/2021' And   Last_m >  '03/01/2021'",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "DS_AzureSqlTable_incre_source",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DS_AzureSqlTable_incre_destination",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"folder": {
-					"name": "incremental_load"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_AzureSqlTable_control')]",
-				"[concat(variables('factoryId'), '/datasets/DS_AzureSqlTable_incre_source')]",
-				"[concat(variables('factoryId'), '/datasets/DS_AzureSqlTable_incre_destination')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/fullLoad')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy all data",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "Key",
-											"type": "Int32",
-											"physicalType": "int"
-										},
-										"sink": {
-											"name": "Key",
-											"type": "Int32",
-											"physicalType": "int"
-										}
-									},
-									{
-										"source": {
-											"name": "Name",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "Name",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Phone",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "Phone",
-											"type": "String",
-											"physicalType": "varchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Last_m",
-											"type": "DateTime",
-											"physicalType": "date"
-										},
-										"sink": {
-											"name": "Last_m",
-											"type": "DateTime",
-											"physicalType": "date"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "DS_AzureSqlTable_incre_source",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DS_AzureSqlTable_incre_destination",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"folder": {
-					"name": "incremental_load"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_AzureSqlTable_incre_source')]",
-				"[concat(variables('factoryId'), '/datasets/DS_AzureSqlTable_incre_destination')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_AzureSqlTable_control')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_AzureSqlDatabase_source incre",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "incremental load"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "TableName",
-						"type": "varchar"
-					},
-					{
-						"name": "LastLoadDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "tblControl"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_AzureSqlDatabase_source incre')]"
 			]
 		}
 	]

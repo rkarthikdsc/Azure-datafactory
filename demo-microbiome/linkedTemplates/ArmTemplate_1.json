@@ -7,13 +7,21 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "demo-microbiome"
 		},
-		"LS_AzureSqlDatabase_source incre_connectionString": {
+		"Ls_AzureDataLakeStorage_app_sink_accountKey": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_source incre'"
+			"metadata": "Secure string for 'accountKey' of 'Ls_AzureDataLakeStorage_app_sink'"
 		},
-		"LS_AzureSqlDatabase_incre_destination_connectionString": {
+		"ls_joins_sink_accountKey": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_incre_destination'"
+			"metadata": "Secure string for 'accountKey' of 'ls_joins_sink'"
+		},
+		"Ls_AzureDataLakeStorage_app_sink_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adls4demo.dfs.core.windows.net"
+		},
+		"ls_joins_sink_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adls4demo.dfs.core.windows.net"
 		}
 	},
 	"variables": {
@@ -21,27 +29,35 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/LS_AzureSqlDatabase_source incre')]",
+			"name": "[concat(parameters('factoryName'), '/Ls_AzureDataLakeStorage_app_sink')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"type": "AzureSqlDatabase",
+				"type": "AzureBlobFS",
 				"typeProperties": {
-					"connectionString": "[parameters('LS_AzureSqlDatabase_source incre_connectionString')]"
+					"url": "[parameters('Ls_AzureDataLakeStorage_app_sink_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('Ls_AzureDataLakeStorage_app_sink_accountKey')]"
+					}
 				}
 			},
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/LS_AzureSqlDatabase_incre_destination')]",
+			"name": "[concat(parameters('factoryName'), '/ls_joins_sink')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"type": "AzureSqlDatabase",
+				"type": "AzureBlobFS",
 				"typeProperties": {
-					"connectionString": "[parameters('LS_AzureSqlDatabase_incre_destination_connectionString')]"
+					"url": "[parameters('ls_joins_sink_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ls_joins_sink_accountKey')]"
+					}
 				}
 			},
 			"dependsOn": []
@@ -91,6 +107,39 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_AzureSqlTable_control')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSqlDatabase_source incre",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "incremental load"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TableName",
+						"type": "varchar"
+					},
+					{
+						"name": "LastLoadDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tblControl"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_AzureSqlTable_destination')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -123,6 +172,86 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "userData"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_AzureSqlTable_incre_destination')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSqlDatabase_incre_destination",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "incremental load"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Key",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "Phone",
+						"type": "varchar"
+					},
+					{
+						"name": "Last_m",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tbluser"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_AzureSqlTable_incre_source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSqlDatabase_source incre",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "incremental load"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Key",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "Phone",
+						"type": "varchar"
+					},
+					{
+						"name": "Last_m",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tbluser"
 				}
 			},
 			"dependsOn": []
@@ -525,7 +654,9 @@
 					}
 				]
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Ls_AzureDataLakeStorage_app_sink')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Ds_DelimitedText_app_source')]",
@@ -679,134 +810,6 @@
 				]
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Ds_sort_source')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage_source_DS_sort",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "dataflow_DS"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "Sales_File_2014_2019_USA_UK_IND.csv",
-						"fileSystem": "input"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "Country",
-						"type": "String"
-					},
-					{
-						"name": "Year",
-						"type": "String"
-					},
-					{
-						"name": "Product_Type",
-						"type": "String"
-					},
-					{
-						"name": "Sales",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/parameter')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_AzureDataLakeStorage_sort_output",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"filesystem": {
-						"type": "string"
-					},
-					"filename": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().filename",
-							"type": "Expression"
-						},
-						"fileSystem": {
-							"value": "@dataset().filesystem",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_AzureSqlTable_incre_source')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_AzureSqlDatabase_source incre",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "incremental load"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "Key",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Name",
-						"type": "varchar"
-					},
-					{
-						"name": "Phone",
-						"type": "varchar"
-					},
-					{
-						"name": "Last_m",
-						"type": "date"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "tbluser"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_AzureSqlDatabase_source incre')]"
-			]
 		}
 	]
 }
