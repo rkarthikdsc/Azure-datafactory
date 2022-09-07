@@ -1,0 +1,165 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf4etldemo"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"AzureDataLakeStorage_source_DS_sort_accountKey": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
+		"DS_AzureDataLakeStorage_filesource_accountKey": {
+			"value": ""
+		},
+		"LS_AzureDataLakeStorage_appsource_accountKey": {
+			"value": ""
+		},
+		"LS_AzureDataLakeStorage_destination_accountKey": {
+			"value": ""
+		},
+		"LS_AzureDataLakeStorage_param_accountKey": {
+			"value": ""
+		},
+		"LS_AzureDataLakeStorage_sort_output_accountKey": {
+			"value": ""
+		},
+		"LS_AzureSqlDatabase1_Destination_data_connectionString": {
+			"value": ""
+		},
+		"LS_AzureSqlDatabase1_source_Data_connectionString": {
+			"value": ""
+		},
+		"LS_AzureSqlDatabase_advent_source_connectionString": {
+			"value": ""
+		},
+		"LS_AzureSqlDatabase_destination_connectionString": {
+			"value": ""
+		},
+		"LS_AzureSqlDatabase_incre_destination_connectionString": {
+			"value": ""
+		},
+		"LS_AzureSqlDatabase_source incre_connectionString": {
+			"value": ""
+		},
+		"LS_AzureSqlDatabase_source_tbluser_connectionString": {
+			"value": ""
+		},
+		"LS_AzureSqlDatabase_source_user_connectionString": {
+			"value": ""
+		},
+		"LS_blob_Sink_connectionString": {
+			"value": ""
+		},
+		"LS_blob_source_connectionString": {
+			"value": ""
+		},
+		"LS_dataflow_output_accountKey": {
+			"value": ""
+		},
+		"LS_datalake_github_sink_accountKey": {
+			"value": ""
+		},
+		"LS_email_logicapp_input_accountKey": {
+			"value": ""
+		},
+		"LS_joins_left_source_accountKey": {
+			"value": ""
+		},
+		"LS_joins_right_accountKey": {
+			"value": ""
+		},
+		"LS_joins_right_source_accountKey": {
+			"value": ""
+		},
+		"LS_joins_right_sources_accountKey": {
+			"value": ""
+		},
+		"LS_joins_sink_result_accountKey": {
+			"value": ""
+		},
+		"LS_listfiles_source_accountKey": {
+			"value": ""
+		},
+		"LS_logic_output_accountKey": {
+			"value": ""
+		},
+		"Ls_AzureDataLakeStorage_app_sink_accountKey": {
+			"value": ""
+		},
+		"ls_joins_sink_accountKey": {
+			"value": ""
+		},
+		"AzureDataLakeStorage_source_DS_sort_properties_typeProperties_url": {
+			"value": "https://demointernadls.dfs.core.windows.net"
+		},
+		"DS_AzureDataLakeStorage_filesource_properties_typeProperties_url": {
+			"value": "https://storage4adfdemo.dfs.core.windows.net/"
+		},
+		"LS_AzureDataLakeStorage_appsource_properties_typeProperties_url": {
+			"value": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_AzureDataLakeStorage_destination_properties_typeProperties_url": {
+			"value": "https://storage4adfdemo.dfs.core.windows.net/"
+		},
+		"LS_AzureDataLakeStorage_param_properties_typeProperties_url": {
+			"value": "https://storage4adfdemo.dfs.core.windows.net/"
+		},
+		"LS_AzureDataLakeStorage_sort_output_properties_typeProperties_url": {
+			"value": "https://demointernadls.dfs.core.windows.net"
+		},
+		"LS_HttpServer_input_properties_typeProperties_url": {
+			"value": "https://github.com"
+		},
+		"LS_dataflow_output_properties_typeProperties_url": {
+			"value": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_datalake_github_sink_properties_typeProperties_url": {
+			"value": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_email_logicapp_input_properties_typeProperties_url": {
+			"value": "https://demointernadls.dfs.core.windows.net"
+		},
+		"LS_github_source_properties_typeProperties_url": {
+			"value": "https://github.com"
+		},
+		"LS_joins_left_source_properties_typeProperties_url": {
+			"value": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_joins_right_properties_typeProperties_url": {
+			"value": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_joins_right_source_properties_typeProperties_url": {
+			"value": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_joins_right_sources_properties_typeProperties_url": {
+			"value": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_joins_sink_result_properties_typeProperties_url": {
+			"value": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_listfiles_source_properties_typeProperties_url": {
+			"value": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_logic_output_properties_typeProperties_url": {
+			"value": "https://demointernadls.dfs.core.windows.net"
+		},
+		"Ls_AzureDataLakeStorage_app_sink_properties_typeProperties_url": {
+			"value": "https://adls4demo.dfs.core.windows.net"
+		},
+		"ls_joins_sink_properties_typeProperties_url": {
+			"value": "https://adls4demo.dfs.core.windows.net"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
