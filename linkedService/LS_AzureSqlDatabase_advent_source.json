@@ -1,0 +1,12 @@
+{
+	"name": "LS_AzureSqlDatabase_advent_source",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=sqltables.database.windows.net;initial catalog=adventure_works_backup;user id=azureadmin",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEYzOUUzMTQ2LTY0NjItNEFBQi1CRDA0LTI1MENBRUMxNkQ4M18zOGZhODllYS1iZGY1LTQ4M2EtOGM1ZC03YjAyMGM5N2I2ODEiDQp9"
+		}
+	}
+}
