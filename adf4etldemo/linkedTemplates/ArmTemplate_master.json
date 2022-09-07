@@ -127,6 +127,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_joins_sink'"
 		},
+		"LS_AzureSqlDatabase2_prod_source_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase2_prod_source'"
+		},
+		"LS_AzureBlobStorage_exported_sink_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_AzureBlobStorage_exported_sink'"
+		},
 		"AzureDataLakeStorage_source_DS_sort_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://demointernadls.dfs.core.windows.net"
@@ -362,6 +370,12 @@
 					},
 					"ls_joins_sink_accountKey": {
 						"value": "[parameters('ls_joins_sink_accountKey')]"
+					},
+					"LS_AzureSqlDatabase2_prod_source_connectionString": {
+						"value": "[parameters('LS_AzureSqlDatabase2_prod_source_connectionString')]"
+					},
+					"LS_AzureBlobStorage_exported_sink_connectionString": {
+						"value": "[parameters('LS_AzureBlobStorage_exported_sink_connectionString')]"
 					},
 					"LS_dataflow_output_properties_typeProperties_url": {
 						"value": "[parameters('LS_dataflow_output_properties_typeProperties_url')]"

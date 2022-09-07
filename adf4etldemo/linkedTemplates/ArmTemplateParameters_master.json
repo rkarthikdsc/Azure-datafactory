@@ -95,6 +95,12 @@
 		"ls_joins_sink_accountKey": {
 			"value": ""
 		},
+		"LS_AzureSqlDatabase2_prod_source_connectionString": {
+			"value": ""
+		},
+		"LS_AzureBlobStorage_exported_sink_connectionString": {
+			"value": ""
+		},
 		"AzureDataLakeStorage_source_DS_sort_properties_typeProperties_url": {
 			"value": "https://demointernadls.dfs.core.windows.net"
 		},
