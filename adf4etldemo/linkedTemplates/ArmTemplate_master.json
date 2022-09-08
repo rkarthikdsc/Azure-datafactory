@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'DS_AzureDataLakeStorage_filesource'"
 		},
+		"LS_AzureBlobStorage_adls_source_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_AzureBlobStorage_adls_source'"
+		},
 		"LS_AzureBlobStorage_exported_sink_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_AzureBlobStorage_exported_sink'"
@@ -38,6 +42,10 @@
 		"LS_AzureDataLakeStorage_param_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'LS_AzureDataLakeStorage_param'"
+		},
+		"LS_AzureDataLakeStorage_sink_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_AzureDataLakeStorage_sink'"
 		},
 		"LS_AzureDataLakeStorage_sort_output_accountKey": {
 			"type": "secureString",
@@ -155,6 +163,10 @@
 			"type": "string",
 			"defaultValue": "https://storage4adfdemo.dfs.core.windows.net/"
 		},
+		"LS_AzureDataLakeStorage_sink_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mydemoadlssa.dfs.core.windows.net/"
+		},
 		"LS_AzureDataLakeStorage_sort_output_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://demointernadls.dfs.core.windows.net"
@@ -254,6 +266,9 @@
 					"DS_AzureDataLakeStorage_filesource_accountKey": {
 						"value": "[parameters('DS_AzureDataLakeStorage_filesource_accountKey')]"
 					},
+					"LS_AzureBlobStorage_adls_source_connectionString": {
+						"value": "[parameters('LS_AzureBlobStorage_adls_source_connectionString')]"
+					},
 					"LS_AzureBlobStorage_exported_sink_connectionString": {
 						"value": "[parameters('LS_AzureBlobStorage_exported_sink_connectionString')]"
 					},
@@ -265,6 +280,9 @@
 					},
 					"LS_AzureDataLakeStorage_param_accountKey": {
 						"value": "[parameters('LS_AzureDataLakeStorage_param_accountKey')]"
+					},
+					"LS_AzureDataLakeStorage_sink_accountKey": {
+						"value": "[parameters('LS_AzureDataLakeStorage_sink_accountKey')]"
 					},
 					"LS_AzureDataLakeStorage_sort_output_accountKey": {
 						"value": "[parameters('LS_AzureDataLakeStorage_sort_output_accountKey')]"
@@ -293,9 +311,6 @@
 					"LS_AzureSqlDatabase_source_tbluser_connectionString": {
 						"value": "[parameters('LS_AzureSqlDatabase_source_tbluser_connectionString')]"
 					},
-					"LS_AzureSqlDatabase_source_user_connectionString": {
-						"value": "[parameters('LS_AzureSqlDatabase_source_user_connectionString')]"
-					},
 					"AzureDataLakeStorage_source_DS_sort_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage_source_DS_sort_properties_typeProperties_url')]"
 					},
@@ -311,11 +326,11 @@
 					"LS_AzureDataLakeStorage_param_properties_typeProperties_url": {
 						"value": "[parameters('LS_AzureDataLakeStorage_param_properties_typeProperties_url')]"
 					},
+					"LS_AzureDataLakeStorage_sink_properties_typeProperties_url": {
+						"value": "[parameters('LS_AzureDataLakeStorage_sink_properties_typeProperties_url')]"
+					},
 					"LS_AzureDataLakeStorage_sort_output_properties_typeProperties_url": {
 						"value": "[parameters('LS_AzureDataLakeStorage_sort_output_properties_typeProperties_url')]"
-					},
-					"LS_HttpServer_input_properties_typeProperties_url": {
-						"value": "[parameters('LS_HttpServer_input_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -334,6 +349,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"LS_AzureSqlDatabase_source_user_connectionString": {
+						"value": "[parameters('LS_AzureSqlDatabase_source_user_connectionString')]"
 					},
 					"LS_blob_Sink_connectionString": {
 						"value": "[parameters('LS_blob_Sink_connectionString')]"
@@ -376,6 +394,9 @@
 					},
 					"ls_joins_sink_accountKey": {
 						"value": "[parameters('ls_joins_sink_accountKey')]"
+					},
+					"LS_HttpServer_input_properties_typeProperties_url": {
+						"value": "[parameters('LS_HttpServer_input_properties_typeProperties_url')]"
 					},
 					"LS_dataflow_output_properties_typeProperties_url": {
 						"value": "[parameters('LS_dataflow_output_properties_typeProperties_url')]"
@@ -500,6 +521,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'adf4etldemo_ArmTemplate_4')]"
+			]
+		},
+		{
+			"name": "adf4etldemo_ArmTemplate_6",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_6.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adf4etldemo_ArmTemplate_5')]"
 			]
 		}
 	]
