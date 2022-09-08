@@ -1,0 +1,27 @@
+{
+	"name": "DS_blob_source_param_prod",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureBlobStorage_exported_sink",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"filename": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "exported-data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

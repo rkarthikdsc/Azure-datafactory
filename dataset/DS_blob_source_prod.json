@@ -1,0 +1,39 @@
+{
+	"name": "DS_blob_source_prod",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureBlobStorage_exported_sink",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "exported-data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "DepartmentID",
+				"type": "String"
+			},
+			{
+				"name": "Name",
+				"type": "String"
+			},
+			{
+				"name": "GroupName",
+				"type": "String"
+			},
+			{
+				"name": "ModifiedDate",
+				"type": "String"
+			}
+		]
+	}
+}

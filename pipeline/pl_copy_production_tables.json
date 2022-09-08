@@ -3,37 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "List of prod tables",
-				"type": "Lookup",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderQuery": "select table_name,table_schema\nfrom information_schema.tables\nwhere table_type = 'base table' and table_schema = 'production'",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"dataset": {
-						"referenceName": "DS_adv_Sql_source",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": false
-				}
-			},
-			{
 				"name": "ForEachtables",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "List of prod tables",
+						"activity": "Get Metadata1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -42,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('List of prod tables').output.value",
+						"value": "@activity('Get Metadata1').output.childItems",
 						"type": "Expression"
 					},
 					"isSequential": true,
@@ -50,7 +24,14 @@
 						{
 							"name": "Copy data1",
 							"type": "Copy",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Set variable1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -61,9 +42,25 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "AzureSqlSource",
-									"queryTimeout": "02:00:00",
-									"partitionOption": "None"
+									"type": "DelimitedTextSource",
+									"additionalColumns": [
+										{
+											"name": "lastmodified_date",
+											"value": {
+												"value": "@variables('lstmodified')",
+												"type": "Expression"
+											}
+										}
+									],
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"wildcardFileName": "*",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
 								},
 								"sink": {
 									"type": "DelimitedTextSink",
@@ -88,15 +85,11 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "DS_AzureSqlTable2_prod_source",
+									"referenceName": "DS_blob_source_param_prod",
 									"type": "DatasetReference",
 									"parameters": {
-										"Table_Name": {
-											"value": "@item().table_name",
-											"type": "Expression"
-										},
-										"Schema_Name": {
-											"value": "@item().table_schema",
+										"filename": {
+											"value": "@item().name",
 											"type": "Expression"
 										}
 									}
@@ -104,21 +97,104 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "DS_prod_sink",
+									"referenceName": "DS_output_sink_prod",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Get Metadata2",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DS_blob_source_param_prod",
 									"type": "DatasetReference",
 									"parameters": {
-										"Filename": {
-											"value": "@concat(item().table_schema,'_',item().table_Name,'.csv')",
+										"filename": {
+											"value": "@item().name",
 											"type": "Expression"
 										}
 									}
+								},
+								"fieldList": [
+									"lastModified"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
 								}
-							]
+							}
+						},
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get Metadata2",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "lstmodified",
+								"value": {
+									"value": "@activity('Get Metadata2').output.lastModified",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
+			},
+			{
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_blob_source_prod",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
 			}
 		],
+		"variables": {
+			"lstmodified": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "sql_etl"
 		},
