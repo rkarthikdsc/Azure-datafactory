@@ -1,0 +1,22 @@
+{
+	"name": "DS_adls_sqlsource",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_adls_sqlinputsource",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "sqlinput"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
