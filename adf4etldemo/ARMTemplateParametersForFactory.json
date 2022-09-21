@@ -107,6 +107,12 @@
 		"ls_joins_sink_accountKey": {
 			"value": ""
 		},
+		"LS_adls_sqlinputsource_accountKey": {
+			"value": ""
+		},
+		"LS_AzureSqlDatabase_filesink_connectionString": {
+			"value": ""
+		},
 		"AzureDataLakeStorage_source_DS_sort_properties_typeProperties_url": {
 			"value": "https://demointernadls.dfs.core.windows.net"
 		},
@@ -169,6 +175,9 @@
 		},
 		"ls_joins_sink_properties_typeProperties_url": {
 			"value": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_adls_sqlinputsource_properties_typeProperties_url": {
+			"value": "https://mydemoadlssa.dfs.core.windows.net/"
 		}
 	}
 }

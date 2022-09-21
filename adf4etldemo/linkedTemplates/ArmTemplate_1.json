@@ -67,6 +67,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_joins_sink'"
 		},
+		"LS_adls_sqlinputsource_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_adls_sqlinputsource'"
+		},
+		"LS_AzureSqlDatabase_filesink_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_filesink'"
+		},
 		"LS_HttpServer_input_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://github.com"
@@ -122,6 +130,10 @@
 		"ls_joins_sink_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://adls4demo.dfs.core.windows.net"
+		},
+		"LS_adls_sqlinputsource_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mydemoadlssa.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -422,62 +434,32 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/LS_adls_sqlinputsource')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
 				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Name",
-						"type": "varchar"
-					},
-					{
-						"name": "age",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Address_id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Sales_id",
-						"type": "int",
-						"precision": 10
-					}
-				],
+				"type": "AzureBlobFS",
 				"typeProperties": {
-					"schema": "dbo",
-					"table": "customer"
+					"url": "[parameters('LS_adls_sqlinputsource_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('LS_adls_sqlinputsource_accountKey')]"
+					}
 				}
 			},
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTable2')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/LS_AzureSqlDatabase_filesink')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_AzureSqlDatabase2_prod_source",
-					"type": "LinkedServiceReference"
-				},
 				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {}
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('LS_AzureSqlDatabase_filesink_connectionString')]"
+				}
 			},
 			"dependsOn": []
 		}
