@@ -19,6 +19,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
 		},
+		"AzureSqlDatabase2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
+		},
+		"AzureSqlDatabase3_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase3'"
+		},
 		"DS_AzureDataLakeStorage_filesource_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'DS_AzureDataLakeStorage_filesource'"
@@ -71,6 +79,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_destination'"
 		},
+		"LS_AzureSqlDatabase_filesink_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_filesink'"
+		},
 		"LS_AzureSqlDatabase_incre_destination_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_incre_destination'"
@@ -87,6 +99,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_source_user'"
 		},
+		"LS_adls_sqlinputsource_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_adls_sqlinputsource'"
+		},
 		"LS_blob_Sink_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_blob_Sink'"
@@ -94,6 +110,10 @@
 		"LS_blob_source_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_blob_source'"
+		},
+		"LS_cust_source_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_cust_source'"
 		},
 		"LS_dataflow_output_accountKey": {
 			"type": "secureString",
@@ -143,14 +163,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'ls_joins_sink'"
 		},
-		"LS_adls_sqlinputsource_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'LS_adls_sqlinputsource'"
-		},
-		"LS_AzureSqlDatabase_filesink_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'LS_AzureSqlDatabase_filesink'"
-		},
 		"AzureDataLakeStorage_source_DS_sort_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://demointernadls.dfs.core.windows.net"
@@ -182,6 +194,10 @@
 		"LS_HttpServer_input_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://github.com"
+		},
+		"LS_adls_sqlinputsource_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mydemoadlssa.dfs.core.windows.net/"
 		},
 		"LS_dataflow_output_properties_typeProperties_url": {
 			"type": "string",
@@ -235,10 +251,6 @@
 			"type": "string",
 			"defaultValue": "https://adls4demo.dfs.core.windows.net"
 		},
-		"LS_adls_sqlinputsource_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://mydemoadlssa.dfs.core.windows.net/"
-		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -274,6 +286,12 @@
 					},
 					"AzureSqlDatabase1_connectionString": {
 						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
+					"AzureSqlDatabase2_connectionString": {
+						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
+					},
+					"AzureSqlDatabase3_connectionString": {
+						"value": "[parameters('AzureSqlDatabase3_connectionString')]"
 					},
 					"DS_AzureDataLakeStorage_filesource_accountKey": {
 						"value": "[parameters('DS_AzureDataLakeStorage_filesource_accountKey')]"
@@ -314,14 +332,8 @@
 					"LS_AzureSqlDatabase_destination_connectionString": {
 						"value": "[parameters('LS_AzureSqlDatabase_destination_connectionString')]"
 					},
-					"LS_AzureSqlDatabase_incre_destination_connectionString": {
-						"value": "[parameters('LS_AzureSqlDatabase_incre_destination_connectionString')]"
-					},
-					"LS_AzureSqlDatabase_source incre_connectionString": {
-						"value": "[parameters('LS_AzureSqlDatabase_source incre_connectionString')]"
-					},
-					"LS_AzureSqlDatabase_source_tbluser_connectionString": {
-						"value": "[parameters('LS_AzureSqlDatabase_source_tbluser_connectionString')]"
+					"LS_AzureSqlDatabase_filesink_connectionString": {
+						"value": "[parameters('LS_AzureSqlDatabase_filesink_connectionString')]"
 					},
 					"AzureDataLakeStorage_source_DS_sort_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage_source_DS_sort_properties_typeProperties_url')]"
@@ -362,14 +374,29 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"LS_AzureSqlDatabase_incre_destination_connectionString": {
+						"value": "[parameters('LS_AzureSqlDatabase_incre_destination_connectionString')]"
+					},
+					"LS_AzureSqlDatabase_source incre_connectionString": {
+						"value": "[parameters('LS_AzureSqlDatabase_source incre_connectionString')]"
+					},
+					"LS_AzureSqlDatabase_source_tbluser_connectionString": {
+						"value": "[parameters('LS_AzureSqlDatabase_source_tbluser_connectionString')]"
+					},
 					"LS_AzureSqlDatabase_source_user_connectionString": {
 						"value": "[parameters('LS_AzureSqlDatabase_source_user_connectionString')]"
+					},
+					"LS_adls_sqlinputsource_accountKey": {
+						"value": "[parameters('LS_adls_sqlinputsource_accountKey')]"
 					},
 					"LS_blob_Sink_connectionString": {
 						"value": "[parameters('LS_blob_Sink_connectionString')]"
 					},
 					"LS_blob_source_connectionString": {
 						"value": "[parameters('LS_blob_source_connectionString')]"
+					},
+					"LS_cust_source_connectionString": {
+						"value": "[parameters('LS_cust_source_connectionString')]"
 					},
 					"LS_dataflow_output_accountKey": {
 						"value": "[parameters('LS_dataflow_output_accountKey')]"
@@ -401,20 +428,11 @@
 					"LS_logic_output_accountKey": {
 						"value": "[parameters('LS_logic_output_accountKey')]"
 					},
-					"Ls_AzureDataLakeStorage_app_sink_accountKey": {
-						"value": "[parameters('Ls_AzureDataLakeStorage_app_sink_accountKey')]"
-					},
-					"ls_joins_sink_accountKey": {
-						"value": "[parameters('ls_joins_sink_accountKey')]"
-					},
-					"LS_adls_sqlinputsource_accountKey": {
-						"value": "[parameters('LS_adls_sqlinputsource_accountKey')]"
-					},
-					"LS_AzureSqlDatabase_filesink_connectionString": {
-						"value": "[parameters('LS_AzureSqlDatabase_filesink_connectionString')]"
-					},
 					"LS_HttpServer_input_properties_typeProperties_url": {
 						"value": "[parameters('LS_HttpServer_input_properties_typeProperties_url')]"
+					},
+					"LS_adls_sqlinputsource_properties_typeProperties_url": {
+						"value": "[parameters('LS_adls_sqlinputsource_properties_typeProperties_url')]"
 					},
 					"LS_dataflow_output_properties_typeProperties_url": {
 						"value": "[parameters('LS_dataflow_output_properties_typeProperties_url')]"
@@ -448,15 +466,6 @@
 					},
 					"LS_logic_output_properties_typeProperties_url": {
 						"value": "[parameters('LS_logic_output_properties_typeProperties_url')]"
-					},
-					"Ls_AzureDataLakeStorage_app_sink_properties_typeProperties_url": {
-						"value": "[parameters('Ls_AzureDataLakeStorage_app_sink_properties_typeProperties_url')]"
-					},
-					"ls_joins_sink_properties_typeProperties_url": {
-						"value": "[parameters('ls_joins_sink_properties_typeProperties_url')]"
-					},
-					"LS_adls_sqlinputsource_properties_typeProperties_url": {
-						"value": "[parameters('LS_adls_sqlinputsource_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -477,6 +486,18 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"Ls_AzureDataLakeStorage_app_sink_accountKey": {
+						"value": "[parameters('Ls_AzureDataLakeStorage_app_sink_accountKey')]"
+					},
+					"ls_joins_sink_accountKey": {
+						"value": "[parameters('ls_joins_sink_accountKey')]"
+					},
+					"Ls_AzureDataLakeStorage_app_sink_properties_typeProperties_url": {
+						"value": "[parameters('Ls_AzureDataLakeStorage_app_sink_properties_typeProperties_url')]"
+					},
+					"ls_joins_sink_properties_typeProperties_url": {
+						"value": "[parameters('ls_joins_sink_properties_typeProperties_url')]"
 					}
 				}
 			},
