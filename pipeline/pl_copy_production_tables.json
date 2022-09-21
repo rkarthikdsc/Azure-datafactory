@@ -130,6 +130,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -182,6 +183,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -198,6 +200,8 @@
 		"folder": {
 			"name": "sql_etl"
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2022-09-08T07:44:42Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }

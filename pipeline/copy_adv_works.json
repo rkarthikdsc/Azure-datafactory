@@ -122,6 +122,8 @@
 		"folder": {
 			"name": "sql_etl"
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2022-09-07T06:31:34Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }
